@@ -1,0 +1,125 @@
+technology,parameter,value,unit
+coal,CO2 intensity,0.354,tCO2/MWth
+gas,CO2 intensity,0.187,tCO2/MWth
+geothermal,CO2 intensity,0.026,tCO2/MWth
+lignite,CO2 intensity,0.334,tCO2/MWth
+oil,CO2 intensity,0.248,tCO2/MWth
+biomass,efficiency,0.468,per unit
+BTES_charger,efficiency,0.9,per unit
+BTES_discharger,efficiency,0.45,per unit
+CCGT,efficiency,0.5,per unit
+coal,efficiency,0.464,per unit
+electrolysis,efficiency,0.8,per unit
+fuel cell,efficiency,0.58,per unit
+geothermal,efficiency,0.239,per unit
+hydro,efficiency,0.9,per unit
+lignite,efficiency,0.447,per unit
+Lithium-Ion-LFP-bicharger,efficiency,0.95,per unit
+nuclear,efficiency,0.337,per unit
+OCGT,efficiency,0.39,per unit
+oil,efficiency,0.393,per unit
+PHS,efficiency,0.75,per unit
+ror,efficiency,0.9,per unit
+biomass,FOM,4.526935,%/year
+BTES_charger,FOM,1,%/year
+BTES_discharger,FOM,1,%/year
+CCGT,FOM,2.5,%/year
+coal,FOM,1.923076,%/year
+electrolysis,FOM,4,%/year
+fuel cell,FOM,3,%/year
+geothermal,FOM,2.358491,%/year
+granite,FOM,1,%/year
+hydro,FOM,1,%/year
+lignite,FOM,2.0,%/year
+OCGT,FOM,3.75,%/year
+offwind,FOM,2.304878,%/year
+oil,FOM,1.5,%/year
+onwind,FOM,2.450549,%/year
+PHS,FOM,1,%/year
+ror,FOM,2,%/year
+solar-rooftop,FOM,2,%/year
+solar-utility,FOM,3,%/year
+biomass,fuel,7,EUR/MWhth
+coal,fuel,8.4,EUR/MWhth
+gas,fuel,16,EUR/MWhth
+lignite,fuel,2.9,EUR/MWhth
+nuclear,fuel,3,EUR/MWhth
+oil,fuel,50,EUR/MWhth
+uranium,fuel,3,EUR/MWhth
+biomass,investment,2209,EUR/kWel
+BTES_charger,investment,250,EUR/kWel
+BTES_discharger,investment,250,EUR/kWel
+CCGT,investment,1000,EUR/kWel
+coal,investment,1300,EUR/kWel
+electrolysis,investment,350,EUR/kWel
+fuel cell,investment,339,EUR/kWel
+geothermal,investment,3392,EUR/kWel
+granite,investment,0.01,EUR/kWhel
+hydro,investment,2000,EUR/kWel
+hydrogen storage underground,investment,0.5,EUR/kWh
+lignite,investment,1500,EUR/kWel
+Lithium-Ion-LFP-bicharger,investment,25,EUR/kWel
+Lithium-Ion-LFP-store,investment,80,EUR/kWhel
+nuclear,investment,6000,EUR/kWel
+OCGT,investment,400,EUR/kWel
+offwind,investment,1640,EUR/kWel
+oil,investment,400,EUR/kWel
+onwind,investment,900,EUR/kWel
+PHS,investment,2000,EUR/kWel
+ror,investment,3000,EUR/kWel
+solar-rooftop,investment,725,EUR/kWel
+solar-utility,investment,800,EUR/kWel
+biomass,lifetime,30,years
+BTES_charger,lifetime,30,years
+BTES_discharger,lifetime,30,years
+CCGT,lifetime,30,years
+coal,lifetime,40,years
+electrolysis,lifetime,18,years
+fuel cell,lifetime,20,years
+geothermal,lifetime,40,years
+granite,lifetime,30,years
+hydro,lifetime,80,years
+hydrogen storage underground,lifetime,40,years
+lignite,lifetime,40,years
+Lithium-Ion-LFP-bicharger,lifetime,12,years
+Lithium-Ion-LFP-store,lifetime,12,years
+nuclear,lifetime,45,years
+OCGT,lifetime,30,years
+offwind,lifetime,30,years
+oil,lifetime,30,years
+onwind,lifetime,30,years
+PHS,lifetime,80,years
+ror,lifetime,80,years
+solar-rooftop,lifetime,25,years
+solar-utility,lifetime,25,years
+BTES_discharger,VOM,4,EUR/MWhel
+CCGT,VOM,4,EUR/MWhel
+coal,VOM,6,EUR/MWhel
+lignite,VOM,7,EUR/MWhel
+nuclear,VOM,8,EUR/MWhel
+OCGT,VOM,3,EUR/MWhel
+offwind,VOM,2.7,EUR/MWhel
+oil,VOM,3,EUR/MWhel
+onwind,VOM,2.3,EUR/MWhel
+biomass,discount rate,0.07,decimal
+BTES_charger,discount rate,0.07,decimal
+BTES_discharger,discount rate,0.07,decimal
+CCGT,discount rate,0.07,decimal
+coal,discount rate,0.07,decimal
+electrolysis,discount rate,0.07,decimal
+fuel cell,discount rate,0.07,decimal
+geothermal,discount rate,0.07,decimal
+granite,discount rate,0.07,decimal
+hydro,discount rate,0.07,decimal
+hydrogen storage underground,discount rate,0.07,decimal
+lignite,discount rate,0.07,decimal
+Lithium-Ion-LFP-bicharger,discount rate,0.07,decimal
+Lithium-Ion-LFP-store,discount rate,0.07,decimal
+nuclear,discount rate,0.07,decimal
+OCGT,discount rate,0.07,decimal
+offwind,discount rate,0.07,decimal
+oil,discount rate,0.07,decimal
+onwind,discount rate,0.07,decimal
+PHS,discount rate,0.07,decimal
+ror,discount rate,0.07,decimal
+solar-rooftop,discount rate,0.07,decimal
