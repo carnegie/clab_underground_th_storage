@@ -1,25 +1,33 @@
 import pandas as pd
 import os
-from clab_pypsa.run_pypsa import build_network, run_pypsa
-from clab_pypsa.utilities.load_costs import load_costs
+from table_pypsa.run_pypsa import build_network, run_pypsa
+from table_pypsa.utilities.load_costs import load_costs
+import argparse
+
+# Get file name from command line argument
+parser = argparse.ArgumentParser()
+parser.add_argument('--file_name', '-f',help='Name of the base case file', required=True)
 
 
 def main():
 
-    base_case_file = 'BTES_base_case.xlsx'
+    base_case_file = parser.parse_args().file_name
     network, case_dict, component_list, comp_attributes = build_network(base_case_file)
 
 
-    for btes_discharge_cost in [200., 250., 500., 950., 1200.]:
+    for btes_discharge_cost in [250., 600., 950.]:
 
         if not btes_discharge_cost == 250.:
             # Replace btes_discharge cost with loop value
             base_costs = pd.read_csv(case_dict['costs_path'],index_col=[0, 1]).sort_index()
-            pd.set_option('display.max_rows', None)
             # Replace 'value' when parameter is 'investment' and technology 'btes_discharge' with new value
             base_costs.loc[('BTES_discharger', 'investment'), 'value'] = btes_discharge_cost
+            # Write costs to temporary file
+            base_costs.to_csv('temp_costs.csv')
             # Load new costs
-            costs = load_costs(base_costs, 'clab_pypsa/utilities/cost_config.yaml')
+            costs = load_costs('temp_costs.csv', 'table_pypsa/utilities/cost_config.yaml', Nyears=case_dict['nyears'])
+            # Remove temporary file
+            os.remove('temp_costs.csv')
     
             # Replace new costs in network and component list
             network.links.loc['BTES_discharger', 'capital_cost'] = costs.at[('BTES_discharger', 'capital_cost')]

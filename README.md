@@ -14,9 +14,9 @@ The setup described below uses [conda](https://docs.conda.io/en/latest/miniconda
 
    ```cd borehole_TES```
 
-   ```conda env create -f clab_pypsa/env.yaml```
+   ```conda env create -f table_pypsa/env.yaml```
 
-   ```conda activate pypsa_table```
+   ```conda activate table_pypsa_env```
 
 ### Install a solver
 
@@ -36,11 +36,11 @@ The network is defined in a case input file. The base case is defined in
 
 The optimization is run with the following command:
 
-```python clab_pypsa/run_pypsa.py -f CASE_FILE```
+```python table_pypsa/run_pypsa.py -f CASE_FILE```
 
 so for the base case:
 
-```python clab_pypsa/run_pypsa.py -f BTES_base_case.xlsx```
+```python table_pypsa/run_pypsa.py -f BTES_base_case.xlsx```
 
 ## Scan cost range
 
