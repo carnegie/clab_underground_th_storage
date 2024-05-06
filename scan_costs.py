@@ -7,10 +7,9 @@ import argparse
 # Get file name from command line argument
 parser = argparse.ArgumentParser()
 parser.add_argument('--file_name', '-f',help='Name of the base case file', required=True)
-parser.add_argument('--cost_values', '-c',help='Values of component attribute to be scanned')
 parser.add_argument('--tech_component', '-t',help='Name of the component to be scanned')
 parser.add_argument('--cost_parameter', '-p',help='Attribute of the component to be scanned')
-
+parser.add_argument('--cost_values', '-c',help='Values of component attribute to be scanned')
 
 
 def main():
@@ -62,7 +61,7 @@ def main():
                 continue
 
         # Run PyPSA with new costs
-        run_pypsa(network, base_case_file, case_dict, component_list, outfile_suffix='_{0}'.format(int(component_cost)))
+        run_pypsa(network, base_case_file, case_dict, component_list, outfile_suffix='_{0}_{1}'.format(replace_component, int(component_cost)))
 
 
 if __name__ == "__main__":
