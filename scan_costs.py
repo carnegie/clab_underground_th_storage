@@ -61,7 +61,7 @@ def main():
                 continue
 
         # Run PyPSA with new costs
-        run_pypsa(network, base_case_file, case_dict, component_list, outfile_suffix='_{0}_{1}'.format(replace_component, int(component_cost)))
+        run_pypsa(network, base_case_file, case_dict, component_list, outfile_suffix='_{0}_{1}'.format(tech_component, int(component_cost)))
 
 
 if __name__ == "__main__":
