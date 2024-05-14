@@ -56,9 +56,6 @@ def main():
             component_type.loc[replace_component, replace_attr] = costs.at[(replace_component, replace_attr)]
             btes_index = [i for i in range(len(component_list)) if component_list[i]['name'] == replace_component][0]
             component_list[btes_index][replace_attr] = costs.at[(replace_component, replace_attr)]
-        else:
-            if os.path.exists(case_dict['output_path']+case_dict['case_name']+case_dict['filename_prefix']):
-                continue
 
         # Run PyPSA with new costs
         run_pypsa(network, base_case_file, case_dict, component_list, outfile_suffix='_{0}_{1}'.format(tech_component, int(component_cost)))
