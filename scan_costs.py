@@ -3,63 +3,44 @@ import os
 from table_pypsa.run_pypsa import build_network, run_pypsa
 from table_pypsa.utilities.load_costs import load_costs
 import argparse
+import copy
 
 # Get file name from command line argument
 parser = argparse.ArgumentParser()
-parser.add_argument('--file_name', '-f',help='Name of the base case file', required=True)
-parser.add_argument('--tech_component', '-t',help='Name of the component to be scanned')
-parser.add_argument('--cost_parameter', '-p',help='Attribute of the component to be scanned')
-parser.add_argument('--cost_values', '-c',help='Values of component attribute to be scanned')
-
+parser.add_argument('--file_name', '-f', help='Name of the base case file', required=True)
+parser.add_argument('--tech_name', '-t', help='Name of the component to be scanned')
+parser.add_argument('--cost_parameter', '-p', help='Attribute of the component to be scanned')
+parser.add_argument('--cost_factors', '-c', help='Values of component attribute to be scanned')
 
 def main():
     args = parser.parse_args()
     base_case_file = args.file_name
-    cost_values = list(map(int, args.cost_values.split(',')))
-    tech_component = args.tech_component
+    cost_factors = list(map(float, args.cost_factors.split(',')))
+    tech_name = args.tech_name
     cost_parameter = args.cost_parameter
 
     network, case_dict, component_list, comp_attributes = build_network(base_case_file)
 
+    for cost_factor in cost_factors:
+        # Create deep copies of network and component_list
+        network_copy = copy.deepcopy(network)
+        component_list_copy = copy.deepcopy(component_list)
 
-    for component_cost in cost_values:
-
-        # Read in costs
-        base_costs = pd.read_csv(case_dict['costs_path'],index_col=[0, 1]).sort_index()
-
-        if not component_cost == base_costs.loc[(tech_component, cost_parameter), 'value']:
-
-            # Replace 'value' when parameter is cost_parameter and technology is tech_component
-            base_costs.loc[(tech_component, cost_parameter), 'value'] = component_cost
-            # Write costs to temporary file
-            base_costs.to_csv('temp_costs.csv')
-            # Load new costs
-            costs = load_costs('temp_costs.csv', 'table_pypsa/utilities/cost_config.yaml', Nyears=case_dict['nyears'])
-            # Remove temporary file
-            os.remove('temp_costs.csv')
-
-            # Replace corresponding component attributes
-            if cost_parameter == 'investment':
-                replace_attr = 'capital_cost'
-            elif cost_parameter == 'fuel':
-                replace_attr = 'marginal_cost'
-            else:
-                replace_attr = cost_parameter
-
-            if tech_component == 'gas':
-                replace_component = 'CCGT'
-            else:
-                replace_component = tech_component
-
-            # Replace new costs in network and component list
-            component_type = [getattr(network, comp_type) for comp_type in ['links', 'generators', 'stores'] if replace_component in getattr(network, comp_type).index][0]
-            component_type.loc[replace_component, replace_attr] = costs.at[(replace_component, replace_attr)]
-            btes_index = [i for i in range(len(component_list)) if component_list[i]['name'] == replace_component][0]
-            component_list[btes_index][replace_attr] = costs.at[(replace_component, replace_attr)]
-
+        if not cost_factor == 1 and not tech_name == "nothing":
+            # Run over all components that have tech_name in their name
+            for tech_component in [comp['name'] for comp in component_list_copy if tech_name in comp['carrier']]:
+                for cost_parameter in ['capital_cost', 'marginal_cost']:
+                    # Replace new costs in network_copy and component_list_copy
+                    component_type = [getattr(network_copy, comp_type) for comp_type in ['links', 'generators', 'stores'] if tech_component in getattr(network_copy, comp_type).index][0]
+                    print('Old {0} for {1}: {2}'.format(cost_parameter, tech_component, component_type.loc[tech_component, cost_parameter]))
+                    component_type.loc[tech_component, cost_parameter] = cost_factor * component_type.loc[tech_component, cost_parameter]
+                    print('New {0} for {1}: {2}'.format(cost_parameter, tech_component, component_type.loc[tech_component, cost_parameter]))
+                    btes_indeces = [i for i in range(len(component_list_copy)) if tech_component in component_list_copy[i]['name']]
+                    for btes_index in btes_indeces:
+                        component_list_copy[btes_index][cost_parameter] = component_type.loc[tech_component, cost_parameter]
+        
         # Run PyPSA with new costs
-        run_pypsa(network, base_case_file, case_dict, component_list, outfile_suffix='_{0}_{1}'.format(tech_component, int(component_cost)))
-
+        run_pypsa(network_copy, base_case_file, case_dict, component_list_copy, outfile_suffix='_{0}_costsx{1}'.format(tech_name, str(cost_factor).replace('.', 'p')))
 
 if __name__ == "__main__":
     main()
