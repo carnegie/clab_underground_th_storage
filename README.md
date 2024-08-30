@@ -6,13 +6,13 @@
 
 Clone this repository recursively (this ensures that the submodules are also cloned):
 
-```git clone https://github.com/awongel/borehole_TES --recursive```
+```git clone https://github.com/carnegie/clab_underground_th_storage.git --recursive```
 
 ### Set up the environment
 
 The setup described below uses [conda](https://docs.conda.io/en/latest/miniconda.html) for easy package management.
 
-   ```cd borehole_TES```
+   ```cd clab_underground_th_storage```
 
    ```conda env create -f table_pypsa/env.yaml```
 
@@ -28,32 +28,56 @@ If you use a different solver, make sure to change the field "solver" in you cas
 
 ### Case input file
 
-The network is defined in a case input file. The base case is defined in
+The network is defined in a case input file. The input files for this paper are defined in
 
-```BTES_base_case.xlsx```
+```input_files/case_files/```
+
+### Data input files
+
+Wind and solar capacity factors are obtained with [Atlite](https://github.com/PyPSA/atlite) through a [script in table_pypsa](https://github.com/carnegie/table_pypsa/blob/dev_atlite_cfs/capacity_factors_atlite/get_US_CFs.py).
+
+[Cleaned demand data](https://github.com/truggles/EIA_Cleaned_Hourly_Electricity_Demand_Data/tree/v1.3) for the US is obtained with a scanning and imputation tool based on EIA data.
+
+The hourly electricity cost is obtained from an optimization of the base case without the undergound thermal storage in the system (see ```input_files/case_files/BTES_base_case_no_btes.xlsx```).
+
+All of these files can be found in 
+```input_files/```
 
 ### Run the optimization
 
-The optimization is run with the following command:
+The optimization for a single input file is run with the following command:
 
 ```python table_pypsa/run_pypsa.py -f CASE_FILE```
 
 so for the base case:
 
-```python table_pypsa/run_pypsa.py -f BTES_base_case.xlsx```
+```python table_pypsa/run_pypsa.py -f input_files/case_files/BTES_base_case.xlsx```
+
 
 ## Scan cost range
 
-To scan a cost range for a component (currently BTES discharger capital cost), use the script
+To scan a range of cost factors (all costs of all components of this technology will be scaled by the cost factor) for a technology, use the script
 
-```python scan_btes_costs.py```
+```python scan_btes_costs.py -f CASE_FILE -t TECHNOLOGY -c COST_FACTORS```
+
+where
+ - ```CASE_FILE``` is the input case file to run the cost scan on
+ - ```TECHNOLOGY``` is the technology for which the cost is scaled
+ - ```COST_FACTORS``` are the cost factors (or cost factor) by which the technology cost is scaled in a comma-separated list.
+
+For example to scan the BTES costs by 0.2 and 0.5 based on the base case (giving two output files), do
+
+```python scan_costs.py -f input_files/case_files/BTES_base_case.xlsx -t BTES -c 0.2,0.5```
+
 
 ## Plot results
 
-A simple plot can be created with the jupyter notebook
+Plots of the system costs and dispatch (Fig.2) can be created with the jupyter notebook
 
 ```plot_results.ipynb```
 
+Plots of the price taker/price maker comparison (Fig.3) can be created with the jupyter notebook
 
+```plot_price_taker.ipynb```
 
 
