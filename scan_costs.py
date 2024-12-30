@@ -35,94 +35,69 @@ def replace_electricity_costs(cost_factor, scan_tech, tech_comp, n):
         f.close()
     return electricity_costs
 
-
-from concurrent.futures import ProcessPoolExecutor
-import copy
-
-def process_cost_factor(cost_factor, network, component_list, elec_cost, tech_name, case_dict, base_case_file):
-    # Create shallow copies or lightweight deep copies
-    network_copy = copy.deepcopy(network)
-    component_list_copy = copy.deepcopy(component_list)
-
-    # Determine the relevant technologies
-    if elec_cost:
-        tech_names = ['const_generator', 'power_seller']
-    else:
-        tech_names = {
-            "fossil": ['natgas', 'oil'],
-            "renewable": ['wind', 'solar', 'battery', 'hydrogen']
-        }.get(tech_name, [tech_name])
-
-    # Pre-filter components by tech_names
-    filtered_components = {
-        tech: [comp for comp in component_list_copy if tech in comp['carrier']]
-        for tech in tech_names
-    }
-
-    for technology, components in filtered_components.items():
-        if cost_factor == 1 or technology == "nothing":
-            continue
-
-        for tech_component in [comp['name'] for comp in components]:
-            component_type = next(
-                (getattr(network_copy, comp_type) for comp_type in ['links', 'generators', 'stores']
-                 if tech_component in getattr(network_copy, comp_type).index), None
-            )
-
-            if component_type is None:
-                continue
-
-            for cost_parameter in ['capital_cost', 'marginal_cost']:
-                old_cost = component_type.loc[tech_component, cost_parameter]
-                print(f'Old {cost_parameter} for {tech_component}: {old_cost}')
-
-                if elec_cost and cost_parameter == 'capital_cost':
-                    continue
-
-                if tech_name == "fossil" and cost_parameter == 'capital_cost':
-                    continue
-
-                if tech_name == "xxx":
-                    base_costs = pd.read_csv(case_dict['costs_path'],index_col=[0, 1]).sort_index()
-                    # Adjust for specific cases (replace temp files with in-memory operations)
-                    base_costs.loc[(tech_component, 'fuel'), 'value'] *= cost_factor
-                    costs = load_costs(base_costs, 'table_pypsa/utilities/cost_config.yaml', Nyears=case_dict['nyears'])
-                    component_type.loc[tech_component, cost_parameter] = costs.at[(tech_component, cost_parameter)]
-                else:
-                    component_type.loc[tech_component, cost_parameter] *= cost_factor
-
-                print(f'New {cost_parameter} for {tech_component}: {component_type.loc[tech_component, cost_parameter]}')
-
-                # Update component_list_copy
-                for comp in components:
-                    if comp['name'] == tech_component:
-                        comp[cost_parameter] = component_type.loc[tech_component, cost_parameter]
-
-    # Run PyPSA with updated network and components
-    run_pypsa(
-        network_copy,
-        base_case_file,
-        case_dict,
-        component_list_copy,
-        outfile_suffix=f'_{tech_name}_costsx{str(cost_factor).replace(".", "p")}'
-    )
-
 def scan_costs(base_case_file, cost_factors, tech_name, elec_cost=False):
     """
     Scan costs of a specific technology in the network.
     """
 
     network, case_dict, component_list, comp_attributes = build_network(base_case_file)
-    # Parallelize the outer loop
-    with ProcessPoolExecutor() as executor:
-        futures = [
-            executor.submit(
-                process_cost_factor,
-                cost_factor, network, component_list, elec_cost, tech_name, case_dict, base_case_file
-            )
-            for cost_factor in cost_factors
-        ]
-        results = [future.result() for future in futures]
+    base_costs = pd.read_csv(case_dict['costs_path'],index_col=[0, 1]).sort_index()
+
+
+    for cost_factor in cost_factors:
+        # Create deep copies of network and component_list
+        network_copy = copy.deepcopy(network)
+        component_list_copy = copy.deepcopy(component_list)
+
+        if elec_cost:
+            tech_names = ['const_generator', 'power_seller']
+        
+        else:
+            if tech_name == "fossil":
+                tech_names = ['natgas', 'oil']
+            elif tech_name == "renewable":
+                tech_names = ['wind', 'solar', 'battery', 'hydrogen']
+            else:
+                tech_names = [tech_name]
+
+        for technology in tech_names:
+            if not cost_factor == 1 and not technology == "nothing":
+                # Run over all components that have tech_name in their name
+                for tech_component in [comp['name'] for comp in component_list_copy if technology in comp['carrier']]:
+                    for cost_parameter in ['capital_cost', 'marginal_cost']:
+
+                        component_type = [getattr(network_copy, comp_type) for comp_type in ['links', 'generators', 'stores'] if tech_component in getattr(network_copy, comp_type).index][0]
+                        print('Old {0} for {1}: {2}'.format(cost_parameter, tech_component, component_type.loc[tech_component, cost_parameter]))
+                        
+                        if elec_cost:
+                            if cost_parameter == 'capital_cost':
+                                continue
+                            replace_electricity_costs(cost_factor, tech_name, technology, network_copy)
+                        
+                        else:
+                            # For fossil, only scale fuel cost
+                            if tech_name == "xxx":
+                                if cost_parameter == 'capital_cost':
+                                    continue
+                                base_costs.loc[(tech_component, 'fuel'), 'value'] *= cost_factor
+                                # Write costs to temporary file
+                                base_costs.to_csv('temp_costs.csv')
+                                # Load new costs
+                                costs = load_costs('temp_costs.csv', 'table_pypsa/utilities/cost_config.yaml', Nyears=case_dict['nyears'])
+                                # Replace new costs
+                                component_type.loc[tech_component, cost_parameter] = costs.at[(tech_component, cost_parameter)]
+                                # Remove temporary file
+                                os.remove('temp_costs.csv')
+                            else:
+                                component_type.loc[tech_component, cost_parameter] = cost_factor * component_type.loc[tech_component, cost_parameter]
+                        print('New {0} for {1}: {2}'.format(cost_parameter, tech_component, component_type.loc[tech_component, cost_parameter]))
+                        # Replace new costs in network_copy and component_list_copy
+                        tech_indeces = [i for i in range(len(component_list_copy)) if tech_component in component_list_copy[i]['name']]
+                        for tech_index in tech_indeces:
+                            component_list_copy[tech_index][cost_parameter] = component_type.loc[tech_component, cost_parameter]
+        
+        # Run PyPSA with new costs
+        run_pypsa(network_copy, base_case_file, case_dict, component_list_copy, outfile_suffix='_{0}_costsx{1}'.format(tech_name, str(cost_factor).replace('.', 'p')))
 
 if __name__ == "__main__":
     args = parser.parse_args()
