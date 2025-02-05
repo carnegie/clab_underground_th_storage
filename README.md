@@ -34,9 +34,9 @@ The network is defined in a case input file. The input files for this paper are 
 
 ### Data input files
 
-Wind and solar capacity factors are obtained with [Atlite](https://github.com/PyPSA/atlite) through a [script in table_pypsa](https://github.com/carnegie/table_pypsa/blob/dev_atlite_cfs/capacity_factors_atlite/get_US_CFs.py).
+Wind and solar capacity factors are obtained with [Atlite](https://github.com/PyPSA/atlite).
 
-[Cleaned demand data](https://github.com/truggles/EIA_Cleaned_Hourly_Electricity_Demand_Data/tree/v1.3) for the US is obtained with a scanning and imputation tool based on EIA data.
+[Cleaned demand data](https://github.com/truggles/EIA_Cleaned_Hourly_Electricity_Demand_Data/tree/v1.4) for the US is obtained with a scanning and imputation tool based on EIA data.
 
 The hourly electricity cost is obtained from an optimization of the base case without the undergound thermal storage in the system (see ```input_files/case_files/BTES_base_case_no_btes.xlsx```).
 
@@ -58,7 +58,7 @@ so for the base case:
 
 To scan a range of cost factors (all costs of all components of this technology will be scaled by the cost factor) for a technology, use the script
 
-```python scan_btes_costs.py -f CASE_FILE -t TECHNOLOGY -c COST_FACTORS```
+```python scan_costs.py -f CASE_FILE -t TECHNOLOGY -c COST_FACTORS```
 
 where
  - ```CASE_FILE``` is the input case file to run the cost scan on
@@ -68,6 +68,30 @@ where
 For example to scan the BTES costs by 0.2 and 0.5 based on the base case (giving two output files), do
 
 ```python scan_costs.py -f input_files/case_files/BTES_base_case.xlsx -t BTES -c 0.2,0.5```
+
+All price-maker results are obtained with this cost scan (Fig.2 and price-maker results in Fig.3).
+To produce the smooth cost range scans, we ran the cost scan with the following value: 1e-6, 0.08, 0.16, 0.25, 0.33, 0.41, 0.49, 0.58, 0.66, 0.74, 0.82, 0.91, 0.99, 1.07, 1.15, 1.24, 1.32, 1.4, 1.48, 1.57, 1.65.
+
+## Price-taker results
+
+For the price taker results, we first need to obtain the electricity costs from the price-maker cases without underground thermal storage in the system with
+
+```python table_pypsa/run_pypsa.py -f input_files/case_files/BTES_base_case_no_btes.xlsx```
+
+For the scans where the costs of fossil generators or renewables were varied (SI Fig. 2), do
+
+```python scan_costs.py -f input_files/case_files/BTES_base_case_no_btes.xlsx -t TECHNOLOGY -c COST_VALUES```
+where TECHNOLOGY is either ```fossil``` or ```renewable``` and COST_VALUES are the same as listed above.
+
+To then run the price-taker cases, for the scan of underground thermal storage (Fig. 3), do
+
+```python scan_costs.py -f input_files/case_files/BTES_price_taker.xlsx -t BTES -c COST_VALUES```
+
+ and for the scan of fossil and renewables (SI Fig. 2)
+
+```python scan_costs.py -f input_files/case_files/BTES_price_taker.xlsx -t TECHNOLOGY -c COST_VALUES --elec_cost```
+
+where TECHNOLOGY is either ```fossil``` or ```renewable``` and COST_VALUES are the same as listed above.
 
 
 ## Plot results
