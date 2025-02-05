@@ -33,7 +33,7 @@ def replace_electricity_costs(cost_factor, scan_tech, tech_comp, n):
         else:
             raise ValueError('Invalid tech_comp value: {0}'.format(tech_comp))
         f.close()
-    return electricity_costs
+    return n
 
 def scan_costs(base_case_file, cost_factors, tech_name, elec_cost=False):
     """
@@ -72,7 +72,7 @@ def scan_costs(base_case_file, cost_factors, tech_name, elec_cost=False):
                         if elec_cost:
                             if cost_parameter == 'capital_cost':
                                 continue
-                            replace_electricity_costs(cost_factor, tech_name, technology, network_copy)
+                            network_copy = replace_electricity_costs(cost_factor, tech_name, technology, network_copy)
                         
                         else:
                             # For fossil, only scale fuel cost
