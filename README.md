@@ -104,4 +104,4 @@ Plots of the price taker/price maker comparison (Fig.3) can be created with the 
 
 ```plot_price_taker.ipynb```
 
-
+[![DOI](https://zenodo.org/badge/608204677.svg)](https://doi.org/10.5281/zenodo.14928612)
