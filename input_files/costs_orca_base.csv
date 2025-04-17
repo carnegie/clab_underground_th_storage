@@ -39,36 +39,36 @@ PHS,FOM,1,%/year
 ror,FOM,2,%/year
 solar-rooftop,FOM,2,%/year
 solar-utility,FOM,3,%/year
-biomass,fuel,7,EUR/MWhth
-coal,fuel,8.4,EUR/MWhth
-gas,fuel,16,EUR/MWhth
-lignite,fuel,2.9,EUR/MWhth
-nuclear,fuel,3,EUR/MWhth
-oil,fuel,50,EUR/MWhth
-uranium,fuel,3,EUR/MWhth
-biomass,investment,2209,EUR/kWel
-BTES_charger,investment,250,EUR/kWel
-BTES_discharger,investment,250,EUR/kWel
-CCGT,investment,1000,EUR/kWel
-coal,investment,1300,EUR/kWel
-electrolysis,investment,350,EUR/kWel
-fuel cell,investment,339,EUR/kWel
-geothermal,investment,3392,EUR/kWel
-granite,investment,0.01,EUR/kWhel
-hydro,investment,2000,EUR/kWel
-hydrogen storage underground,investment,0.5,EUR/kWh
-lignite,investment,1500,EUR/kWel
-Lithium-Ion-LFP-bicharger,investment,25,EUR/kWel
-Lithium-Ion-LFP-store,investment,80,EUR/kWhel
-nuclear,investment,6000,EUR/kWel
-OCGT,investment,400,EUR/kWel
-offwind,investment,1640,EUR/kWel
-oil,investment,400,EUR/kWel
-onwind,investment,900,EUR/kWel
-PHS,investment,2000,EUR/kWel
-ror,investment,3000,EUR/kWel
-solar-rooftop,investment,725,EUR/kWel
-solar-utility,investment,800,EUR/kWel
+biomass,fuel,7,USD/MWhth
+coal,fuel,8.4,USD/MWhth
+gas,fuel,16,USD/MWhth
+lignite,fuel,2.9,USD/MWhth
+nuclear,fuel,3,USD/MWhth
+oil,fuel,50,USD/MWhth
+uranium,fuel,3,USD/MWhth
+biomass,investment,2209,USD/kWel
+BTES_charger,investment,250,USD/kWel
+BTES_discharger,investment,250,USD/kWel
+CCGT,investment,1000,USD/kWel
+coal,investment,1300,USD/kWel
+electrolysis,investment,350,USD/kWel
+fuel cell,investment,339,USD/kWel
+geothermal,investment,3392,USD/kWel
+granite,investment,0.01,USD/kWhel
+hydro,investment,2000,USD/kWel
+hydrogen storage underground,investment,0.5,USD/kWh
+lignite,investment,1500,USD/kWel
+Lithium-Ion-LFP-bicharger,investment,25,USD/kWel
+Lithium-Ion-LFP-store,investment,80,USD/kWhel
+nuclear,investment,6000,USD/kWel
+OCGT,investment,400,USD/kWel
+offwind,investment,1640,USD/kWel
+oil,investment,400,USD/kWel
+onwind,investment,900,USD/kWel
+PHS,investment,2000,USD/kWel
+ror,investment,3000,USD/kWel
+solar-rooftop,investment,725,USD/kWel
+solar-utility,investment,800,USD/kWel
 biomass,lifetime,30,years
 BTES_charger,lifetime,30,years
 BTES_discharger,lifetime,30,years
@@ -92,15 +92,15 @@ PHS,lifetime,80,years
 ror,lifetime,80,years
 solar-rooftop,lifetime,25,years
 solar-utility,lifetime,25,years
-BTES_discharger,VOM,4,EUR/MWhel
-CCGT,VOM,4,EUR/MWhel
-coal,VOM,6,EUR/MWhel
-lignite,VOM,7,EUR/MWhel
-nuclear,VOM,8,EUR/MWhel
-OCGT,VOM,3,EUR/MWhel
-offwind,VOM,2.7,EUR/MWhel
-oil,VOM,3,EUR/MWhel
-onwind,VOM,2.3,EUR/MWhel
+BTES_discharger,VOM,4,USD/MWhel
+CCGT,VOM,4,USD/MWhel
+coal,VOM,6,USD/MWhel
+lignite,VOM,7,USD/MWhel
+nuclear,VOM,8,USD/MWhel
+OCGT,VOM,3,USD/MWhel
+offwind,VOM,2.7,USD/MWhel
+oil,VOM,3,USD/MWhel
+onwind,VOM,2.3,USD/MWhel
 biomass,discount rate,0.07,decimal
 BTES_charger,discount rate,0.07,decimal
 BTES_discharger,discount rate,0.07,decimal
