@@ -67,7 +67,8 @@ def scan_costs(base_case_file, cost_factors, tech_name, component, elec_cost=Fal
                 if component == 'all':
                     run_techs = [comp['name'] for comp in component_list_copy if technology in comp['carrier']]
                 else:
-                    run_techs = [comp['name'] for comp in component_list_copy if technology in comp['carrier'] and component in comp['name']]
+                    run_techs = [comp['name'] for comp in component_list_copy if technology in comp['carrier'] and comp['name']==component]
+                # Get the technology name from the component list
                 for tech_component in run_techs:
                     for cost_parameter in ['capital_cost', 'marginal_cost']:
 
@@ -88,8 +89,8 @@ def scan_costs(base_case_file, cost_factors, tech_name, component, elec_cost=Fal
                             component_list_copy[tech_index][cost_parameter] = component_type.loc[tech_component, cost_parameter]
         
         # Run PyPSA with new costs
-        comp_label = '_'+component if not component=='all' else ''
-        run_pypsa(network_copy, base_case_file, case_dict, component_list_copy, outfile_suffix='_{0}{1}_costsx{2}'.format(tech_name, comp_label, str(cost_factor).replace('.', 'p')))
+        comp_label = component if not component=='all' else tech_name
+        run_pypsa(network_copy, base_case_file, case_dict, component_list_copy, outfile_suffix='_{0}_costsx{1}'.format(comp_label, str(cost_factor).replace('.', 'p')))
 
 if __name__ == "__main__":
     args = parser.parse_args()
